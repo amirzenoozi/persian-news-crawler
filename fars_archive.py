@@ -125,7 +125,7 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, date: str = ''):
             except KeyboardInterrupt:
                 sys.exit(0)
             except:
-                print(base_url + link['href'])
+                print(page_link)
 
 
 def main():
