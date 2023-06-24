@@ -40,7 +40,7 @@ db_cursor = db_connection.cursor()
 agency_name = 'MehrNews'
 
 # Import Categories
-with open('mehr_news_categories.json', encoding="utf-8") as file:
+with open('./statics/mehr_news_categories.json', encoding="utf-8") as file:
     categories = json.load(file)
 
 try:

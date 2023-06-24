@@ -17,7 +17,7 @@ db_connection = sqlite3.connect(db_file_path)
 db_cursor = db_connection.cursor()
 
 # Import Categories
-with open('fars_news_categories.json', encoding="utf-8") as file:
+with open('./statics/fars_news_categories.json', encoding="utf-8") as file:
     categories = json.load(file)
 
 try:
