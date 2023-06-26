@@ -46,19 +46,38 @@ def main():
     result = count_articles_per_month()
     for month in result:
         chart_data_values.append(month[0])
-        date_time = datetime.strptime(month[1], '%Y-%m-%d %H:%M:%S').strftime("%B %Y")
+        date_time = datetime.strptime(month[1], '%Y-%m-%d %H:%M:%S')
         chart_data_labels.append(date_time)
     
     fig = go.Figure(data=[
         go.Bar(x=chart_data_labels, y=chart_data_values, text=chart_data_values, textposition='outside')
     ])
     fig.update_layout(
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1,
+                        label="1m",
+                        step="month",
+                        stepmode="backward"),
+                    dict(count=6,
+                        label="6m",
+                        step="month",
+                        stepmode="backward"),
+                    dict(step="all")
+                ])
+            ),
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date"
+        ),
         title_font_family="IRANSansWeb",
         font_family="IRANSansWeb",
         uniformtext_minsize=12,
         hoverlabel=dict(
             font_family="IRANSansWeb"
-        ),
+        )
     )
     fig.show(config=plt_config)
 
