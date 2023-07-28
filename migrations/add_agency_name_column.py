@@ -1,7 +1,7 @@
 import sqlite3
 
 
-db_file_path = './volume/temp.db'
+db_file_path = './volume/archive.db'
 db_connection = sqlite3.connect(db_file_path)
 db_cursor = db_connection.cursor()
 
