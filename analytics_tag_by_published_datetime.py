@@ -28,10 +28,10 @@ with open('./statics/fars_news_categories.json', encoding="utf-8") as file:
     categories = json.load(file)
 
 
-def count_articles_per_month():
+def count_articles_per_month(word):
     db_connection = sqlite3.connect(db_file_path)
     db_cursor = db_connection.cursor()
-    query = "SELECT COUNT(*), published_datetime FROM news GROUP BY STRFTIME('%m-%Y', published_datetime) ORDER BY published_datetime ASC;"
+    query = f"SELECT COUNT(*), published_datetime from news WHERE tags LIKE '%{word}%' GROUP BY STRFTIME('%m-%Y', published_datetime) ORDER BY published_datetime ASC;"
     db_cursor.execute(query)
     result = db_cursor.fetchall()
     db_connection.commit()
@@ -43,7 +43,7 @@ def count_articles_per_month():
 def main():
     chart_data_values = []
     chart_data_labels = []
-    result = count_articles_per_month()
+    result = count_articles_per_month('آمریکا')
     for month in result:
         chart_data_values.append(month[0])
         date_time = datetime.strptime(month[1], '%Y-%m-%d %H:%M:%S')

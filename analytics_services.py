@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
-db_file_path = './volume/fars_news.db'
+db_file_path = './volume/archive.db'
 plt_config = {
     'displayModeBar': True,
     'displaylogo': False,
