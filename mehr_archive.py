@@ -3,7 +3,6 @@ import requests
 import json
 import sys
 import re
-import pytz
 
 import scripts.database as db
 
@@ -13,7 +12,6 @@ from tqdm import tqdm
 from persiantools.digits import fa_to_en
 from persiantools.characters import ar_to_fa
 from persiantools.jdatetime import JalaliDate, JalaliDateTime
-from persian import convert_fa_numbers
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
@@ -31,7 +29,6 @@ jalali_months = {
     "بهمن": 11,
     "اسفند": 12
 }
-
 
 base_url = 'https://www.mehrnews.ir'
 db_file_path = './volume/archive.db'
@@ -63,6 +60,7 @@ except sqlite3.Error as error:
 db_connection.commit()
 db_connection.close()
 
+
 def extract_single_news_information(link, category, agency):
     try:
         page = requests.get(link, timeout=5)
@@ -76,7 +74,7 @@ def extract_single_news_information(link, category, agency):
             jd_date_part = fa_to_en(jd_text[0].strip())
             jd_month_name = ar_to_fa(''.join(re.findall(r'\D', jd_date_part))).strip()
             jd_month_number = jalali_months.get(jd_month_name)
-            jd_parsed = jd_date_part.replace( jd_month_name, f'-{ jd_month_number }-' ).replace(' ', '').split('-')
+            jd_parsed = jd_date_part.replace(jd_month_name, f'-{jd_month_number}-').replace(' ', '').split('-')
             jd_year = int(jd_parsed[2])
             jd_month = int(jd_parsed[1])
             jd_day = int(jd_parsed[0])
@@ -86,7 +84,7 @@ def extract_single_news_information(link, category, agency):
             published_date = datetime.strftime(gregorian_date, '%m/%d/%Y %H:%M:%S %p')
         else:
             published_date = datetime.now().strftime('%m/%d/%Y %H:%M:%S %p')
-        
+
         # Get Title
         subtitle_object = soup.select('h4.subtitle')
         title_object = soup.select('h1.title')
@@ -102,7 +100,7 @@ def extract_single_news_information(link, category, agency):
 
         # Get Service name and Subgroup Name
         service_object = soup.select('div.item-header ol.breadcrumb a')
-        if (len(list(service_object)) == 2):
+        if len(list(service_object)) == 2:
             service = service_object[0].get_text().strip()
             subgroup = service_object[1].get_text().strip()
         else:
@@ -116,7 +114,7 @@ def extract_single_news_information(link, category, agency):
         except:
             short_link = 'None'
 
-        #Get Tags
+        # Get Tags
         tags_list_object = soup.select('section.tags a')
         tags_list = []
         for tag in tags_list_object:
@@ -130,7 +128,6 @@ def extract_single_news_information(link, category, agency):
             paragraphs.append(pr.get_text().strip())
         body = ' '.join(paragraphs)
 
-        
         # Insert into the DB
         db.insert_news_in_archive_multiple_agency(
             db_file=db_file_path,
@@ -152,17 +149,17 @@ def extract_single_news_information(link, category, agency):
 
 
 def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, month: int = 0, day: int = 0):
-    if year == 0 or month == 0 or day  == 0:
+    if year == 0 or month == 0 or day == 0:
         return 'You Must Enter The Date'
     else:
         category = 'archive'
         tqdm_bar = tqdm(range(start_page + 1, start_page + total_page + 1), desc=f'Page Number #1')
         for p in tqdm_bar:
-            delay = randint(1,5)
+            delay = randint(1, 5)
             try:
                 page_link = f'https://www.mehrnews.com/page/archive.xhtml?mn={month}&wide=0&ty=1&dy={day}&ms=0&pi={p}&yr={year}'
                 page = requests.get(page_link, timeout=5)
-                soup = BeautifulSoup( page.content, 'html.parser' )
+                soup = BeautifulSoup(page.content, 'html.parser')
 
                 news_list = soup.select('section.list ul > li.news figure > a')
                 for link in news_list:
@@ -178,10 +175,10 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, mont
 
 
 def main():
-    start_date = datetime(2023, 6, 23)
+    start_date = datetime(2023, 1, 1)
     end_date = datetime.now()
     current_date = start_date
-    delay = randint(1,5)
+    delay = randint(1, 5)
     while current_date <= end_date:
         jalali_date = JalaliDate(current_date)
         each_day_loop(0, 1, jalali_date.year, jalali_date.month, jalali_date.day)
