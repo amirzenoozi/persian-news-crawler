@@ -154,7 +154,7 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, mont
         category = 'archive'
         tqdm_bar = tqdm(range(start_page + 1, start_page + total_page + 1), desc=f'Page Number #1')
         for p in tqdm_bar:
-            delay = randint(1,5)
+            delay = randint(1, 5)
             try:
                 page_link = f'https://www.khabaronline.ir/archive?mn={month}&wide=0&ty=1&dy={day}&ms=0&pi={p}&yr={year}'
                 page = requests.get(page_link, timeout=5)
@@ -174,13 +174,13 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, mont
 
 
 def main():
-    start_date = datetime(2023, 6, 23)
+    start_date = datetime(2023, 1, 1)
     end_date = datetime.now()
     current_date = start_date
     delay = randint(1, 5)
     while current_date <= end_date:
         jalali_date = JalaliDate(current_date)
-        each_day_loop(0, 1, jalali_date.year, jalali_date.month, jalali_date.day)
+        each_day_loop(0, 50, jalali_date.year, jalali_date.month, jalali_date.day)
         print(f'\n==================================')
         print(f'Date {jalali_date.year}-{jalali_date.month}-{jalali_date.day} is finished!')
         print(f'==================================\n')
@@ -189,5 +189,4 @@ def main():
 
 
 if __name__ == '__main__':
-    extract_single_news_information('https://www.khabaronline.ir/news/1796140/%D8%AC%D9%86%D8%B3-%D8%A8%D8%AF%D9%86%D9%87-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84-%D9%87%D8%A7%DB%8C-%D8%B3%D8%A7%D9%85%D8%B3%D9%88%D9%86%DA%AF-%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1-%D9%85%DB%8C-%DA%A9%D9%86%D8%AF', 'archive', agency_name)
-    # main()
+    main()
