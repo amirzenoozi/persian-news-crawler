@@ -178,13 +178,13 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, mont
 
 
 def main():
-    start_date = datetime(2023, 6, 23)
+    start_date = datetime(2023, 1, 1)
     end_date = datetime.now()
     current_date = start_date
     delay = randint(1,5)
     while current_date <= end_date:
         jalali_date = JalaliDate(current_date)
-        each_day_loop(0, 1, jalali_date.year, jalali_date.month, jalali_date.day)
+        each_day_loop(0, 50, jalali_date.year, jalali_date.month, jalali_date.day)
         print(f'\n==================================')
         print(f'Date {jalali_date.year}-{jalali_date.month}-{jalali_date.day} is finished!')
         print(f'==================================\n')
