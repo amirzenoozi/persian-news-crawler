@@ -3,6 +3,7 @@ import requests
 import json
 import sys
 import re
+import pytz
 
 import scripts.database as db
 
@@ -30,11 +31,12 @@ jalali_months = {
     "اسفند": 12
 }
 
-base_url = 'https://www.mehrnews.ir'
+
+base_url = 'https://www.khabaronline.ir'
 db_file_path = './volume/archive.db'
 db_connection = sqlite3.connect(db_file_path)
 db_cursor = db_connection.cursor()
-agency_name = 'MehrNews'
+agency_name = 'KhabarOnline'
 
 # Import Categories
 with open('./statics/mehr_news_categories.json', encoding="utf-8") as file:
@@ -60,21 +62,20 @@ except sqlite3.Error as error:
 db_connection.commit()
 db_connection.close()
 
-
 def extract_single_news_information(link, category, agency):
     try:
         page = requests.get(link, timeout=5)
         soup = BeautifulSoup(page.content, 'html.parser')
         # Get Published Datetime
-        published_date_object = soup.select('div.item-header div.item-date')
+        published_date_object = soup.select('div.item-header div.item-date span')
         if (published_date_object):
             # Convert Persian digits to English digits
-            jd_text = published_date_object[0].get_text().strip().split('،')
+            jd_text = published_date_object[0].get_text().strip().split('-')
             jd_time_part = fa_to_en(jd_text[1].strip())
             jd_date_part = fa_to_en(jd_text[0].strip())
             jd_month_name = ar_to_fa(''.join(re.findall(r'\D', jd_date_part))).strip()
             jd_month_number = jalali_months.get(jd_month_name)
-            jd_parsed = jd_date_part.replace(jd_month_name, f'-{jd_month_number}-').replace(' ', '').split('-')
+            jd_parsed = jd_date_part.replace( jd_month_name, f'-{ jd_month_number }-' ).replace(' ', '').split('-')
             jd_year = int(jd_parsed[2])
             jd_month = int(jd_parsed[1])
             jd_day = int(jd_parsed[0])
@@ -84,14 +85,12 @@ def extract_single_news_information(link, category, agency):
             published_date = datetime.strftime(gregorian_date, '%m/%d/%Y %H:%M:%S %p')
         else:
             published_date = datetime.now().strftime('%m/%d/%Y %H:%M:%S %p')
-
+        
         # Get Title
-        subtitle_object = soup.select('h4.subtitle')
         title_object = soup.select('h1.title')
-        subtitle = subtitle_object[0].get_text().strip()
         title = title_object[0].get_text().strip()
 
-        # # Get Abstract
+        # Get Abstract
         abstract_object = soup.select('article div.item-summary p')
         try:
             abstract = abstract_object[0].get_text().strip()
@@ -99,13 +98,13 @@ def extract_single_news_information(link, category, agency):
             abstract = 'None'
 
         # Get Service name and Subgroup Name
-        service_object = soup.select('div.item-header ol.breadcrumb a')
-        if len(list(service_object)) == 2:
-            service = service_object[0].get_text().strip()
-            subgroup = service_object[1].get_text().strip()
+        service_object = soup.select('section.page-header ol.breadcrumb a')
+        if (len(list(service_object)) == 3):
+            service = service_object[1].get_text().strip()
+            subgroup = service_object[2].get_text().strip()
         else:
             service = categories[category]
-            subgroup = service_object[0].get_text().strip()
+            subgroup = service_object[1].get_text().strip()
 
         # Get ShortLink
         short_link_object = soup.select('div.short-link-container input')
@@ -121,13 +120,13 @@ def extract_single_news_information(link, category, agency):
             tags_list.append(tag.get_text().strip())
         tags = ', '.join(tags_list)
 
-        # #Get Body
+        # Get Body
         body_objects = soup.select('div[itemprop="articleBody"] > p')
         paragraphs = []
         for pr in body_objects:
             paragraphs.append(pr.get_text().strip())
         body = ' '.join(paragraphs)
-
+        
         # Insert into the DB
         db.insert_news_in_archive_multiple_agency(
             db_file=db_file_path,
@@ -149,7 +148,7 @@ def extract_single_news_information(link, category, agency):
 
 
 def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, month: int = 0, day: int = 0):
-    if year == 0 or month == 0 or day == 0:
+    if year == 0 or month == 0 or day  == 0:
         return 'You Must Enter The Date'
     else:
         category = 'archive'
@@ -157,11 +156,11 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, mont
         for p in tqdm_bar:
             delay = randint(1, 5)
             try:
-                page_link = f'https://www.mehrnews.com/page/archive.xhtml?mn={month}&wide=0&ty=1&dy={day}&ms=0&pi={p}&yr={year}'
+                page_link = f'https://www.khabaronline.ir/archive?mn={month}&wide=0&ty=1&dy={day}&ms=0&pi={p}&yr={year}'
                 page = requests.get(page_link, timeout=5)
                 soup = BeautifulSoup(page.content, 'html.parser')
 
-                news_list = soup.select('section.list ul > li.news figure > a')
+                news_list = soup.select('section.list ul > li figure > a')
                 for link in news_list:
                     extract_single_news_information(base_url + link['href'], category, agency_name)
                 tqdm_bar.set_description(f'Page Number #{p}')
@@ -181,7 +180,7 @@ def main():
     delay = randint(1, 5)
     while current_date <= end_date:
         jalali_date = JalaliDate(current_date)
-        each_day_loop(0, 1, jalali_date.year, jalali_date.month, jalali_date.day)
+        each_day_loop(0, 50, jalali_date.year, jalali_date.month, jalali_date.day)
         print(f'\n==================================')
         print(f'Date {jalali_date.year}-{jalali_date.month}-{jalali_date.day} is finished!')
         print(f'==================================\n')
