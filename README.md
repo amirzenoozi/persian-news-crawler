@@ -9,9 +9,11 @@ You Can Contribute to this part and add a new Supported Agency.
 
 - [x] Fars
 - [x] Mehr
+- [x] KhabarOnline
 
 ## Supported Agencies Homepage
 <div>
   <code><a href="https://www.farsnews.ir/" target="_blank"><img width="15%" src="https://www.farsnews.ir/assets/images/farsnews.svg"/></a></code>
   <code><a href="https://www.mehrnews.com/" target="_blank"><img width="15%" src="https://www.mehrnews.com/resources/theme/mehrnews/img/logo.svg"/><a></code>
+  <code><a href="https://www.khabaronline.ir/" target="_blank"><img width="15%" src="https://www.khabaronline.ir/resources/theme/khabaronline/img/logo.png"/><a></code>
 </div>
