@@ -161,7 +161,7 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, mont
                 page = requests.get(page_link, timeout=5)
                 soup = BeautifulSoup(page.content, 'html.parser')
 
-                news_list = soup.select('section.list ul > li.news figure > a')
+                news_list = soup.select('div.items > ul > li figure > a')
                 for link in news_list:
                     extract_single_news_information(base_url + link['href'], category, agency_name)
                 tqdm_bar.set_description(f'Page Number #{p}')
