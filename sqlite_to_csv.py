@@ -7,7 +7,7 @@ import os
 def parse_args():
     desc = "Sqlite2CSV"
     parser = argparse.ArgumentParser(description=desc)
-    parser.add_argument('--file', '-f', type=str, default='', help='Where is Your Sqlite File?')
+    parser.add_argument('-f', '--file', type=str, default='', help='Where is Your Sqlite File?')
     return parser.parse_args()
 
 
@@ -19,8 +19,8 @@ def main(args):
     conn = sqlite3.connect(full_path)
     query = "SELECT * FROM news"
 
-    clients = pd.read_sql(query, conn)
-    clients.to_csv(f'./volume/{file_name_without_ext}.csv', index=False, encoding='utf-8-sig')
+    for chunk in pd.read_sql(query, conn, chunksize=500):
+        chunk.to_csv(f'./volume/{file_name_without_ext}.csv', mode='a', index=False, encoding='utf-8-sig')
 
 
 if __name__ == '__main__':
