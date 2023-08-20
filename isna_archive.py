@@ -181,7 +181,7 @@ def main():
     delay = randint(1, 5)
     while current_date <= end_date:
         jalali_date = JalaliDate(current_date)
-        each_day_loop(0, 1, jalali_date.year, jalali_date.month, jalali_date.day)
+        each_day_loop(0, 50, jalali_date.year, jalali_date.month, jalali_date.day)
         print(f'\n==================================')
         print(f'Date {jalali_date.year}-{jalali_date.month}-{jalali_date.day} is finished!')
         print(f'==================================\n')
