@@ -166,7 +166,7 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, year: int = 0, mont
                     extract_single_news_information(base_url + link['href'], category, agency_name)
                 tqdm_bar.set_description(f'Page Number #{p}')
                 tqdm_bar.refresh()
-                sleep(delay)
+                # sleep(delay)
             except KeyboardInterrupt:
                 sys.exit(0)
             except:
@@ -186,7 +186,7 @@ def main():
         print(f'Date {jalali_date.year}-{jalali_date.month}-{jalali_date.day} is finished!')
         print(f'==================================\n')
         current_date += timedelta(days=1)
-        sleep(delay)
+        # sleep(delay)
 
 
 if __name__ == '__main__':
