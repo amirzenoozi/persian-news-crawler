@@ -1,4 +1,4 @@
-![ISNA](https://github.com/amirzenoozi/persian-news-crawler/assets/16349391/35382cd2-329c-4992-a746-cf5f3e10460d)# Persian News Crawler
+# Persian News Crawler
 
 By Using This Script You Can Easily Crawle Date From The Agency List Below. Moreover, Currently, You Can Download The PersianNews Dataset From This Kaggle Repository.
 
