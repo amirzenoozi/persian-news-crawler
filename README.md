@@ -11,6 +11,7 @@ You Can Contribute to this part and add a new Supported Agency.
 - [x] Mehr
 - [x] KhabarOnline
 - [x] ISNA
+- [x] MashreghNews
 
 ## Supported Agencies Homepage
 <div>
@@ -18,4 +19,5 @@ You Can Contribute to this part and add a new Supported Agency.
   <code><a href="https://www.mehrnews.com/" target="_blank"><img width="15%" src="https://raw.githubusercontent.com/amirzenoozi/persian-news-crawler/91c8e87f6cac00cf34bbaac5e037d1fef88d841a/statics/mehr.svg"/></a></code>
   <code><a href="https://www.khabaronline.ir/" target="_blank"><img width="15%" src="https://github.com/amirzenoozi/persian-news-crawler/blob/main/statics/khabarOnline.png?raw=true"/></a></code>
   <code><a href="https://www.isna.ir/" target="_blank"><img width="15%" src="https://github.com/amirzenoozi/persian-news-crawler/blob/main/statics/ISNA.png?raw=true"/></a></code>
+  <code><a href="https://www.mashreghnews.ir/" target="_blank"><img width="15%" src="https://github.com/amirzenoozi/persian-news-crawler/blob/main/statics/mashregh_news.jpg?raw=true"/></a></code>
 </div>
