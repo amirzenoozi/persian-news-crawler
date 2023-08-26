@@ -2,6 +2,7 @@ import sqlite3
 import requests
 import json
 import sys
+import argparse
 
 import scripts.database as db
 
@@ -40,6 +41,14 @@ except sqlite3.Error as error:
 
 db_connection.commit()
 db_connection.close()
+
+def parse_args():
+    desc = "FarsNews"
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument('-d', '--date', type=str, default='2023-01-01', help='Please Insert The Start Date')
+    parser.add_argument('-c', '--count', type=int, default=50, help='Please Insert The Total Pages In Each Day')
+    return parser.parse_args()
+
 
 def extract_single_news_information(link, category):
     try:
@@ -128,19 +137,23 @@ def each_day_loop(start_page: int = 0, total_page: int = 50, date: str = ''):
                 print(page_link)
 
 
-def main():
-    start_date = datetime(2021, 1, 1)
+def main(args):
+    start_date = datetime.strptime(args.date, '%Y-%m-%d')
     end_date = datetime.now()
     current_date = start_date
     delay = randint(1,5)
     while current_date <= end_date:
         jalali_date = JalaliDate(current_date)
         formated_date = f'{jalali_date.year}/{jalali_date.month}/{jalali_date.day}'
-        each_day_loop(0, 50, formated_date)
+        each_day_loop(0, args.count, formated_date)
         print(f'\n Date {jalali_date.year}-{jalali_date.month}-{jalali_date.day} is finished \n')
         current_date += timedelta(days=1)
         sleep(delay)
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_args()
+    if args is None:
+        exit()
+    
+    main(args)
